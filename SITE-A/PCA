@@ -1,0 +1,10 @@
+conf t
+hostname PCA
+no ip routing 
+no ip domain-lookup
+no cdp run
+
+int e0/0
+no sh
+ip address dhcp
+end
