@@ -3,11 +3,11 @@ hostname RA
 no ip domain-lookup
 no cdp run
 
-router ospf 1
-exit
-
 int lo1
 ip add 1.1.1.1 255.255.255.255
+
+router ospf 1
+exit
 
 int e1/1
 ip add 10.10.10.2 255.255.255.252
