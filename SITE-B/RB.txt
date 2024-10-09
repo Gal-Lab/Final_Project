@@ -1,0 +1,86 @@
+conf t
+hostname RB 
+no ip domain-lookup
+
+router ospf 1
+router-id 2.2.2.2
+exit
+
+int e0/2
+duplex full
+ip add 20.20.20.2 255.255.255.252
+ip ospf 1 area 0
+no sh
+
+int e1/2
+duplex full
+no sh
+
+int lo2
+ip add 2.2.2.2 255.255.255.255
+ip ospf 1 area 0
+
+int e1/2.10
+encapsulation dot1q 10
+ip add 192.168.20.1 255.255.255.0
+ip ospf 1 area 0
+
+int e1/2.99
+encapsulation dot1q 99
+encapsulation dot1q 99 native
+
+ip add 192.168.21.99 255.255.255.0
+ip ospf 1 area 0
+
+ip dhcp excluded-address 192.168.20.1 192.168.20.9
+ip dhcp pool SITE-B
+network 192.168.20.0 255.255.255.0
+default-router 192.168.20.1
+exit
+
+ip domain-name cisco.com
+crypto key generate rsa modulus 1024
+username admin privilege 15 secret cisco
+ip ssh version 2
+line vty 0 4
+login local
+transport input ssh
+exit
+
+interface tunnel0
+ip address 10.0.0.2 255.255.255.252
+ip ospf 1 area 0
+tunnel source lo2
+tunnel destination 1.1.1.1
+tunnel mode gre ip
+exit
+ip route 0.0.0.0 0.0.0.0 20.20.20.1
+
+crypto isakmp policy 20
+encryption aes 256
+hash sha256
+authentication pre-share
+group 14
+lifetime 3600 
+exit
+
+crypto isakmp key cisco address 1.1.1.1
+crypto ipsec transform-set SET esp-aes 256 esp-sha256-hmac
+mode transport
+exit
+
+ip access-list extended ACL
+permit gre host 2.2.2.2 host 1.1.1.1
+exit
+
+crypto map MAP 20 ipsec-isakmp
+match address ACL
+set transform-set SET 
+set peer 1.1.1.1
+exit
+
+int lo2
+crypto map MAP
+exit
+
+
