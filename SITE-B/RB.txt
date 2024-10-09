@@ -68,3 +68,4 @@ Tunnel protection ipsec profile PROFILE
 exit
 
 ip route 0.0.0.0 0.0.0.0 20.20.20.1
+end
