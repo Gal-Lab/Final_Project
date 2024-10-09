@@ -6,12 +6,8 @@ no cdp run
 int lo1
 ip add 1.1.1.1 255.255.255.255
 
-router ospf 1
-exit
-
 int e1/1
 ip add 10.10.10.2 255.255.255.252
-ip ospf 1 area 0
 no sh
 
 int e1/0
@@ -25,6 +21,11 @@ int e1/0.99
 encapsulation dot1q 99
 encapsulation dot1q 99 native
 ip add 192.168.11.99 255.255.255.0
+
+router ospf 1
+network 10.10.10.0 0.0.0.3 area 0
+network 192.168.10.0 0.0.0.255 area 0
+exit
 
 ip dhcp excluded-address 192.168.10.1 192.168.10.9
 ip dhcp pool SITE-A
