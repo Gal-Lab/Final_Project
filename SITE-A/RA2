@@ -3,9 +3,6 @@ hostname RA1
 no ip domain-lookup
 no cdp run
 
-int lo12
-ip add 12.12.12.12 255.255.255.255
-
 int e1/1
 ip add 10.10.10.2 255.255.255.252
 no sh
